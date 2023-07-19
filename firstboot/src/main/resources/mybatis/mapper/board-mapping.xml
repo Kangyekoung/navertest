@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="board.spring.mybatis.BoardDAO">
+
+<insert id="insertBoard" parameterType="boarddto" >
+ insert into board(title, contents, writer, pw, viewcount, writingtime) 
+ values(#{title}, #{contents}, #{writer}, #{pw}, 0, now())
+</insert>
+
+<select id="getTotalBoard" resultType="int" >
+	select count(*) from board
+</select>
+
+<select id="boardList" resultType="boarddto" parameterType="int">
+ select * from board order by writingtime desc limit 
+ <foreach collection="array" item="num" separator=",">
+ #{num}
+ </foreach>
+</select>
+
+<update id="updateViewcount" parameterType="int">
+ update board set viewcount = viewcount+1 where seq=#{seq} 
+</update>
+
+<select id="getDetail" resultType="boarddto" parameterType="int">
+select * from board  where seq=#{seq} 
+</select>
+
+<delete id="deleteBoard" parameterType="int">
+ delete from board where seq=#{seq}
+</delete>
+
+<update id="updateBoard" parameterType="boarddto">
+		update board 
+		set title=#{title}, contents=#{contents}, writingtime=now()
+		where seq=#{seq}
+</update> 
+
+
+<select id="searchList" parameterType="hashmap" resultType="boarddto">
+	select * from board where
+	<choose>
+		<when test="colname == null">
+			title like #{colvalue} or contents like #{colvalue} or writer like #{colvalue} 
+		</when>
+		<otherwise>
+		${colname} like #{colvalue} <!--#{} 자동 ''처리  / 컬럼명은 #{}-->
+		</otherwise>
+	</choose>
+	order by writingtime desc
+</select>
+
+<select id="getSearchBoard" parameterType="hashmap" resultType="int">
+	select count(*) from board where
+	<choose>
+		<when test="colname == null">
+			title like #{colvalue} or contents like #{colvalue} or writer like #{colvalue} 
+		</when>
+		<otherwise>
+		${colname} like #{colvalue} <!--#{} 자동 ''처리  / 컬럼명은 #{}-->
+		</otherwise>
+	</choose>
+</select>
+
+<resultMap type="board.spring.mybatis.BoardMemberDTO" id="boardwritermap">
+	<id property="seq" column="seq" />
+	<result property="title" column="title" />
+	<result property="viewcount" column="viewcount" />
+	<result property="writingtime" column="writingtime" />
+	<result property="pw" column="b_pw" />
+	<association property="member" resultMap="memberMap" /> <!-- 둘은 관계가 있고, 1:1관계 association  1:N관계 collection-->
+	<!-- <collection property="member" resultMap="memberMap" />   -->
+	
+</resultMap>
+
+<resultMap type="board.spring.mybatis.MemberDTO" id="memberMap">
+	<id property="memberid" column="memberid" />
+	<result property="name" column="name" />
+	<result property="email" column="email" />
+	<result property="phone" column="phone" />
+	<result property="regtime" column="regtime" />
+	<result property="pw" column="m_pw" />
+</resultMap>
+<!-- public BoardMemberDTO boardWriterInform(int seq) -->
+
+<select id="boardWriterInform" parameterType="int" resultMap="boardwritermap">
+	select seq, title, contents, memberid, name, email, phone, regtime, b.pw as b_pw, m.pw as m_pw
+	 from  board b inner join c_member m on writer = memberid
+	 where seq = #{seq}
+</select>
+
+</mapper>
+
+
+
+
+
+
