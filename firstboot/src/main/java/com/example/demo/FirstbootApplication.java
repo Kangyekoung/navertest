@@ -4,6 +4,7 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import upload.MyPathConfig;
 
@@ -12,10 +13,11 @@ import upload.MyPathConfig;
 @ComponentScan(basePackageClasses = MyPathConfig.class)
 @ComponentScan(basePackages = "errors")
 @ComponentScan(basePackages = "board.spring.mybatis")
+@ComponentScan(basePackages = "scheduler")
 //@Service@Repository @Component @Controller @Congifuration
-
-@MapperScan(basePackages = "board.spring.mybatis")
 //@Mapper
+@MapperScan(basePackages = "board.spring.mybatis")
+@EnableScheduling
 public class FirstbootApplication {
 
 	// 1.스프링ㅜ부트 메인클래스 : 자동 서버 시작 - com.example.demo 패키지 스캔 자동 포함 

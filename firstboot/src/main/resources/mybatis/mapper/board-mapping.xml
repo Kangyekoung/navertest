@@ -4,8 +4,8 @@
 <mapper namespace="board.spring.mybatis.BoardDAO">
 
 <insert id="insertBoard" parameterType="boarddto" >
- insert into board(title, contents, writer, pw, viewcount, writingtime) 
- values(#{title}, #{contents}, #{writer}, #{pw}, 0, now())
+ insert into board(title, contents, writer, pw, viewcount, writingtime, file_url) 
+ values(#{title}, #{contents}, #{writer}, #{pw}, 0, now(), #{file_url})
 </insert>
 
 <select id="getTotalBoard" resultType="int" >

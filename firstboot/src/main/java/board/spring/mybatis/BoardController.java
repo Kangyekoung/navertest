@@ -1,7 +1,9 @@
 package board.spring.mybatis;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -29,7 +32,23 @@ public class BoardController {
 	}
 	
 	@PostMapping("/boardwrite")
-	public ModelAndView writeprocess(BoardDTO dto){
+	public ModelAndView writeprocess(BoardDTO dto) throws IllegalStateException, IOException{
+		String savePath = "c:/kdt/upload/";
+		
+		MultipartFile file1 =  dto.getFile1();
+		String newFilename1 = null;
+		if(!file1.isEmpty()) {
+			String originalname1 = file1.getOriginalFilename(); //file1의 파일.확장자 가져오기
+			String beforeext1 = originalname1.substring(0, originalname1.indexOf("."));//파일 이름만 추출
+			String ext1 = originalname1.substring(originalname1.indexOf("."));//xml //확장자 추출
+			//newFilename1 = beforeext1 + "(" + UUID.randomUUID().toString() +  ")" +  ext1; //복사한파일 새로운 이름만들기
+			newFilename1 = dto.getWriter() + "_" + ext1;
+			file1.transferTo(new java.io.File(savePath + newFilename1 )); //파일 복사
+			
+			dto.setFile_url(newFilename1);
+		}//if 
+		
+	
 		int insertcount = service.insertBoard(dto);
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("insertcount", insertcount);

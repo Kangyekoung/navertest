@@ -1,10 +1,30 @@
 package board.spring.mybatis;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public class BoardDTO {
 	int seq;
 	String title, contents, writer;
 	int pw, viewcount;
 	String writingtime;
+	//파일관련 변수
+	String file_url;
+	MultipartFile file1;
+	
+
+	public String getFile_url() {
+		return file_url;
+	}
+	public void setFile_url(String file_url) {
+		this.file_url = file_url;
+	}
+	
+	public MultipartFile getFile1() {
+		return file1;
+	}
+	public void setFile1(MultipartFile file1) {
+		this.file1 = file1;
+	}
 	public int getSeq() {
 		return seq;
 	}
