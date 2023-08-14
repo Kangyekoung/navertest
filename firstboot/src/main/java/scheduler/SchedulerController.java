@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class SchedulerController {
 	
-	@Scheduled(initialDelay = 10000, fixedDelay = 3000)
+	//@Scheduled(initialDelay = 10000, fixedDelay = 3000)
 	@GetMapping("/api/scheduler")
 	public void callApi() throws IOException, InterruptedException {
 		StringBuilder result = new StringBuilder();
